@@ -29,13 +29,17 @@ public class SpellRegistry {
 
     @Nullable
     public static Spell getByIncantation(String incantation) {
-        return byIncantations.get(incantation.toLowerCase().replaceAll("\\s", ""));
+        return byIncantations.get(format(incantation));
     }
 
     public static void init() {
     }
 
     public static void reloadMap() {
-        REGISTRY.get().forEach(spell -> byIncantations.put(spell.getIncantation().replaceAll("\\s", ""), spell));
+        REGISTRY.get().forEach(spell -> byIncantations.put(spell.getIncantation(), spell));
+    }
+
+    public static String format(String unformatted) {
+        return unformatted.toLowerCase().replaceAll("\\s+", "_").replaceAll("_+", "_");
     }
 }

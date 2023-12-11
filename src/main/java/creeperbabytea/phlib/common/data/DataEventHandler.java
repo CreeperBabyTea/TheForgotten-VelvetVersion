@@ -1,7 +1,6 @@
 package creeperbabytea.phlib.common.data;
 
-import creeperbabytea.phlib.TheForgotten;
-import creeperbabytea.phlib.common.data.lang.EN_US;
+import creeperbabytea.phlib.common.data.recipe.Crafting;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,6 +14,6 @@ public class DataEventHandler {
     public static void onGatherData(final GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper helper = event.getExistingFileHelper();
-        gen.addProvider(new EN_US(gen, TheForgotten.MODID, "en_us"));
+        gen.addProvider(new Crafting(gen));
     }
 }

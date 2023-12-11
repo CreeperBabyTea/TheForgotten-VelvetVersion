@@ -4,6 +4,8 @@ import creeperbabytea.phlib.common.init.MagicObjects;
 import creeperbabytea.phlib.common.magic.spellwork.SpellEntry;
 import creeperbabytea.phlib.common.magic.spellwork.entity.SpellEntity;
 import creeperbabytea.phlib.common.magic.spellwork.event.event.wand.WandCastEvent;
+import creeperbabytea.phlib.common.magic.spellwork.item.wand.WandMaterial;
+import creeperbabytea.phlib.common.magic.spellwork.item.wand.WandState;
 import creeperbabytea.phlib.common.magic.spellwork.spell.IChargeableSpell;
 import creeperbabytea.phlib.common.magic.spellwork.spell.Spell;
 import creeperbabytea.phlib.common.magic.spellwork.spell.ThrowableSpell;
@@ -11,6 +13,7 @@ import creeperbabytea.phlib.common.registry.SpellRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,6 +21,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -34,6 +38,13 @@ public class WandItem extends Item {
     @Override
     public int getEntityLifespan(ItemStack itemStack, World world) {
         return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.isInGroup(group)) {
+            items.add(makeWand(new WandMaterial.WandWood(1, 0.2F, 122), new WandMaterial.WandCore(1F, 0.7F, 131)));
+        }
     }
 
     @Override
@@ -80,6 +91,7 @@ public class WandItem extends Item {
     /** Detects spell strength multiples caused by external factors, such as the user's identity. */
     private float getMultiplier(ItemStack wand, World world, LivingEntity entity) {
         UUID owner = getOwner(wand);
+        System.out.println(owner);
         if (owner == null) {
             setOwner(wand, entity.getUniqueID());
             return 0.75F;
@@ -88,8 +100,7 @@ public class WandItem extends Item {
             if(owner == entity.getUniqueID()) {
                 return 1.0F;
             } else {
-                return 0.6F;
-                //TODO:转手后
+                return 1.0F - getState(wand).getLoyalty();
             }
         }
     }
@@ -149,6 +160,18 @@ public class WandItem extends Item {
 
     @Nullable
     public static UUID getOwner(ItemStack wand) {
-        return wand.getOrCreateTag().getUniqueId("owner");
+        if (wand.getOrCreateTag().contains("owner"))
+            return wand.getOrCreateTag().getUniqueId("owner");
+        return null;
+    }
+
+    public static ItemStack makeWand(WandMaterial.WandWood wood, WandMaterial.WandCore... core) {
+        ItemStack result = new ItemStack(MagicObjects.WAND);
+        result.getOrCreateTag().put("state", new WandState(wood, core).serializeNBT());
+        return result;
+    }
+
+    public static WandState getState(ItemStack stack) {
+        return new WandState(stack);
     }
 }

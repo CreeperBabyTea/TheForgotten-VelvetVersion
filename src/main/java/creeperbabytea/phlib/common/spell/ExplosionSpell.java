@@ -16,12 +16,12 @@ public class ExplosionSpell extends ThrowableSpell implements IChargeableSpell {
     @Override
     public void onHitEntity(EntityRayTraceResult result, float intensity, SpellEntity spellEntity) {
         if (!spellEntity.world.isRemote)
-            spellEntity.world.createExplosion(spellEntity, result.getEntity().getPosX(), result.getEntity().getPosY(), result.getEntity().getPosZ(), 3, Explosion.Mode.BREAK);
+            spellEntity.world.createExplosion(spellEntity, result.getEntity().getPosX(), result.getEntity().getPosY(), result.getEntity().getPosZ(), 6.0F * intensity, Explosion.Mode.BREAK);
     }
 
     @Override
     public void onHitBlock(BlockRayTraceResult result, float intensity, SpellEntity spellEntity) {
         if (!spellEntity.world.isRemote)
-            spellEntity.world.createExplosion(spellEntity, result.getPos().getX(), result.getPos().getY(), result.getPos().getZ(), 3, Explosion.Mode.BREAK);
+            spellEntity.world.createExplosion(spellEntity, result.getPos().getX(), result.getPos().getY(), result.getPos().getZ(), 6.0F * intensity, Explosion.Mode.BREAK);
     }
 }
