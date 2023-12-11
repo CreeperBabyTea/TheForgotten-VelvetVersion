@@ -5,10 +5,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 public class ReloadEventHandler {
     public static void addListener(IEventBus forge) {
-        forge.addListener(ReloadEventHandler::onReload);
-    }
-
-    public static void onReload(AddReloadListenerEvent event) {
-        event.addListener(new SpellLanguageJsonReader());
+        forge.addListener((AddReloadListenerEvent event) -> event.addListener(new SpellLanguageJsonReader()));
     }
 }

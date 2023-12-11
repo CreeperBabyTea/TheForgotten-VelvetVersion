@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 public class KillingCurse extends ThrowableSpell implements IChargeableSpell {
     public KillingCurse() {
-        super("啃大瓜", new SpellState(8.9F, -1.0F).setType(EnumSpellType.CURSE));
+        super("avada kedavra", new SpellState(8.9F, -1.0F).setType(EnumSpellType.CURSE));
         this.setCastParticle(ParticleSet.builder()
                 .put(1, ParticleTypes.ENCHANT).build());
         this.setTrailParticle(ParticleSet.builder()
@@ -33,7 +33,7 @@ public class KillingCurse extends ThrowableSpell implements IChargeableSpell {
 
     @Override
     public void onHitEntity(EntityRayTraceResult result, float intensity, SpellEntity spellEntity) {
-        if (intensity == 1)
+        if (intensity > 0.9)
             result.getEntity().onKillCommand();
     }
 

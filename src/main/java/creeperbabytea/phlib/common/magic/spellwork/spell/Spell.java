@@ -3,9 +3,11 @@ package creeperbabytea.phlib.common.magic.spellwork.spell;
 import creeperbabytea.phlib.common.magic.general.particles.ParticleSet;
 import creeperbabytea.phlib.common.magic.spellwork.ISpell;
 import creeperbabytea.phlib.common.magic.spellwork.SpellState;
+import creeperbabytea.phlib.common.registry.SpellRegistry;
 import creeperbabytea.tealib.util.math.SpatialVectors;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.vector.Vector3d;
@@ -22,7 +24,7 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
     private ParticleSet cast = ParticleSet.builder().put(1, ParticleTypes.ENCHANT).build();
 
     public Spell(String incantation, SpellState state) {
-        this.incantation = incantation.toLowerCase();
+        this.incantation = SpellRegistry.format(incantation);
         this.state = state;
     }
 
@@ -36,6 +38,9 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
     }
 
     public void influenceOnCaster(LivingEntity caster, float intensity) {
+    }
+
+    public void onLocalCast(PlayerEntity player, float intensity) {
     }
 
     /**

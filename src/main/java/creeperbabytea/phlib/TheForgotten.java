@@ -2,7 +2,7 @@ package creeperbabytea.phlib;
 
 import creeperbabytea.phlib.common.PhilosophersEventHandler;
 import creeperbabytea.phlib.common.PhilosophersObjects;
-import creeperbabytea.phlib.common.IModidHelper;
+import creeperbabytea.tealib.util.IModResourceHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,8 +17,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(TheForgotten.MODID)
-public class TheForgotten implements IModidHelper {
+public class TheForgotten implements IModResourceHelper {
     public static final String MODID = "the_forgotten";
+    public static final String VERSION = "0.1";
+
     public static final Logger LOGGER = LogManager.getLogger();
     public static TheForgotten INSTANCE;
 
@@ -37,24 +39,8 @@ public class TheForgotten implements IModidHelper {
         INSTANCE = this;
     }
 
-    private void setup(final FMLCommonSetupEvent event) {
-    }
-
-    private void doClientStuff(final FMLClientSetupEvent event) {
-    }
-
-    private void enqueueIMC(final InterModEnqueueEvent event) {
-    }
-
-    private void processIMC(final InterModProcessEvent event) {
-    }
-
-    @SubscribeEvent
-    public void onServerStarting(FMLServerStartingEvent event) {
-    }
-
     @Override
-    public String modid() {
+    public String modId() {
         return MODID;
     }
 }
