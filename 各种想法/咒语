@@ -1,0 +1,21 @@
+Mobilus Catia 变 猫 娘
+Flamma Tempestas 火焰风暴[待定] 形成环状的大规模火焰效果
+Crystalis Murusio 晶体之墙 形成坚固的晶体护盾，抵御一切物理伤害，对黑魔法无效
+Laetus Cantus 欢乐颂 对冤魂使用将其解放
+Somnium Porta 梦境之门 在遗忘维度和主世界间传送
+Detonare 爆破
+Ventus Volare 我似浮云
+Teleportus
+Vespertilio Rubrum 翼蝠生风
+Spectere Regenerous 浴血重生 治愈村民
+Exspiravit Locomotor 亡魂复苏 黑魔法。召唤附近的墓葬里的亡魂。
+Aether Wings 以太之翼
+
+RecordCodecBuilder.create((instance) -> instance.group(
+                    Codec.INT.fieldOf("r").forGetter(ColoredParticleData::getRed),
+                    Codec.INT.fieldOf("g").forGetter(ColoredParticleData::getGreen),
+                    Codec.INT.fieldOf("b").forGetter(ColoredParticleData::getBlue),
+                    Codec.INT.fieldOf("a").forGetter(ColoredParticleData::getAlpha),
+                    Codec.FLOAT.fieldOf("scale").forGetter(ColoredParticleData::getScale),
+                    Codec.INT.fieldOf("age").forGetter(ColoredParticleData::getMaxAge))
+            .apply(instance, ColoredParticleData::new))
