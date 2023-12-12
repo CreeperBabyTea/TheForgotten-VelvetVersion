@@ -13,6 +13,9 @@ import java.util.function.Consumer;
 public class ParticleSet {
     private final List<ParticleEntry> particles = new ArrayList<>();
 
+    private ParticleSet() {
+    }
+
     public void add(ParticleEntry entry) {
         this.particles.add(entry);
     }

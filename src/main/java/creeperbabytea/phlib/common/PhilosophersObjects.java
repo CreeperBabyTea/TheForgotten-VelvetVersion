@@ -31,6 +31,7 @@ public class PhilosophersObjects {
 
         MagicObjects.init();
 
+        Items.init();
         Blocks.init();
         Spells.init();
         Entities.init();

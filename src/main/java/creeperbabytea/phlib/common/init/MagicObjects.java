@@ -52,7 +52,6 @@ public class MagicObjects {
                     .build(TheForgotten.MODID + ':' + "conflict_spell"));
 
 
-    public static final SingleItemEntry SCROLL = PhilosophersObjects.GENERAL.register(new SingleItemEntry(new ScrollItem(), "scroll", ""));
     public static final SingleItemEntry WAND = PhilosophersObjects.GENERAL.register(new SingleItemEntry(new WandItem(), "wand", ""));
 
     /*----------------------------------------Ware Craft----------------------------------------*/
@@ -63,6 +62,4 @@ public class MagicObjects {
 
     public static void init() {
     }
-
-
 }

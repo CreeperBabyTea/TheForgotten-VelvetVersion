@@ -8,12 +8,12 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.LightType;
 
 public class LuminousSpell extends Spell {
-    public LuminousSpell(SpellState state) {
-        super("luminous", state);
+    public LuminousSpell() {
+        super("luminous", new SpellState(0.0F, 0.0F));
     }
 
     @Override
     public void onLocalCast(PlayerEntity player, float intensity) {
-        player.world.getLightManager().setData(LightType.SKY, SectionPos.from(player.getPosition()), null, true);
+        //TODO
     }
 }

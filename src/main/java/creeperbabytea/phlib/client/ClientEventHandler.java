@@ -6,12 +6,10 @@ import creeperbabytea.phlib.client.particle.ColoredParticle;
 import creeperbabytea.phlib.common.init.Entities;
 import creeperbabytea.phlib.common.init.MagicObjects;
 import creeperbabytea.phlib.common.init.ParticleTypes;
-import creeperbabytea.phlib.common.magic.general.particles.ColoredParticleData;
 import creeperbabytea.phlib.common.magic.general.particles.ColoredParticleType;
 import creeperbabytea.tealib.client.entity.EntityModelRenderer;
 import creeperbabytea.tealib.client.entity.NonModelRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -34,8 +32,9 @@ public class ClientEventHandler {
     }
 
     public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-        registerColoredFactory(ParticleTypes.COLORED_SMALL_DOT);
-        registerColoredFactory(ParticleTypes.COLORED_MINI_SPELL_RIPPLE);
+        registerColoredFactory(ParticleTypes.COLORED_SQUARE_2);
+        registerColoredFactory(ParticleTypes.COLORED_RIPPLE_2_10);
+        registerColoredFactory(ParticleTypes.COLORED_RIPPLE_2_10_16);
     }
     private static void registerColoredFactory(RegistryObject<ColoredParticleType> obj) {
         Minecraft.getInstance().particles.registerFactory(obj.get(), ColoredParticle.Factory::new);

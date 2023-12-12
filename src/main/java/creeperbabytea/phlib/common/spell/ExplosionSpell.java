@@ -10,7 +10,7 @@ import net.minecraft.world.Explosion;
 
 public class ExplosionSpell extends ThrowableSpell implements IChargeableSpell {
     public ExplosionSpell() {
-        super("detonare", new SpellState(2.6F, -0.1F));
+        super("detonare", new SpellState(3.3F, -0.4F));
     }
 
     @Override

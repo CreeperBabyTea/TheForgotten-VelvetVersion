@@ -71,7 +71,7 @@ public class WandItem extends Item {
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
         if (player.world.isRemote())
-            getSpells(stack, spell -> true).forEach(spell -> spell.drawCastEffect(stack, player, getUseDuration(stack) - count));
+            getSpells(stack, spell -> true).forEach(spell -> spell.drawChargeEffect(stack, player, getUseDuration(stack) - count));
     }
 
     @Override

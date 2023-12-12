@@ -2,6 +2,8 @@ package creeperbabytea.phlib.common.magic;
 
 import creeperbabytea.phlib.common.magic.spellwork.SpellState;
 
+import java.awt.*;
+
 public class MagicState {
     /**
      * <p>The complexity decides the "difficulty" for a wizard to use the very magic.</p>

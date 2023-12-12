@@ -17,18 +17,13 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import javax.annotation.Nullable;
 
 public class KillingCurse extends ThrowableSpell implements IChargeableSpell {
     public KillingCurse() {
         super("avada kedavra", new SpellState(8.9F, -1.0F).setType(EnumSpellType.CURSE));
-        this.setCastParticle(ParticleSet.builder()
-                .put(1, ParticleTypes.ENCHANT).build());
-        this.setTrailParticle(ParticleSet.builder()
-                .put(1, ParticleTypes.COLORED_MINI_SPELL_RIPPLE.get().create(0, 255, 0, 255, 1.0F, 30))
-                .put(19, ParticleTypes.COLORED_SMALL_DOT.get().create(0, 255, 0, 255, 0.3F, 30)).build());
+        this.setColor(0, 255, 0, 255);
     }
 
     @Override
@@ -49,7 +44,7 @@ public class KillingCurse extends ThrowableSpell implements IChargeableSpell {
     @Nullable
     @Override
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] castParticleEquation(int tick, LivingEntity owner, ItemStack wand) {
+    public Vector3d[] chargeParticleEquation(int tick, LivingEntity owner, ItemStack wand) {
         double d0 = Math.log(0.1 * tick);
         double d1 = Math.log(0.01 * tick);
         double d2 = Math.cos(d0);

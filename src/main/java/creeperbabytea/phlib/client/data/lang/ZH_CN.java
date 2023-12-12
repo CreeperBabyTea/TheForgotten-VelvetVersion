@@ -24,6 +24,8 @@ public class ZH_CN extends LanguageProvider implements ILanguageHelper {
         spell(KILLING_CURSE, "阿瓦达啃大瓜");
         spell(EXPLOSION_SPELL, "爆破");
         spell(CAT_TRANSFORM_CHARM, "变猫娘");
+        spell(LUMINOUS_SPELL, "荧光闪烁");
+        spell(SLOW_FALLING_CHARM, "我似浮云");
     }
 
     private void spell(Supplier<? extends Spell> spell, String value) {

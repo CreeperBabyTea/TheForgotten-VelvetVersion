@@ -24,6 +24,6 @@ public class ColoredParticleType extends ParticleType<ColoredParticleData> {
     }
 
     public ColoredParticleData create(int r, int g, int b, int a) {
-        return create(r, g, b, a, 0.5F, 30);
+        return create(r, g, b, a, 1.0F, 30);
     }
 }

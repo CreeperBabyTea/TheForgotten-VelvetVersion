@@ -1,10 +1,10 @@
 package creeperbabytea.phlib.common.magic.spellwork.spell;
 
+import creeperbabytea.phlib.common.init.ParticleTypes;
 import creeperbabytea.phlib.common.magic.general.particles.ParticleSet;
 import creeperbabytea.phlib.common.magic.spellwork.SpellState;
 import creeperbabytea.phlib.common.magic.spellwork.entity.SpellEntity;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
@@ -71,22 +71,31 @@ public abstract class ThrowableSpell extends Spell {
             this.head.draw(world, true, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
     }
 
+    @Override
+    public void setColor(int r, int g, int b, int a) {
+        super.setColor(r, g, b, a);
+        this.setTrailParticle(ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10.get().create(r, g, b, a)).put(19, ParticleTypes.COLORED_SQUARE_2.get().create(r, g, b, a)).build());
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public void setTrailParticle(@Nullable ParticleSet trail) {
         this.trail = trail;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void setHeadParticle(@Nullable ParticleSet head) {
         this.head = head;
     }
 
     @Nullable
-    public ParticleSet getTrail() {
-        return trail;
-    }
-
-    @Nullable
-    public ParticleSet getHead() {
+    @OnlyIn(Dist.CLIENT)
+    public ParticleSet getHeadParticle() {
         return head;
     }
 
+    @Nullable
+    @OnlyIn(Dist.CLIENT)
+    public ParticleSet getTrailParticle() {
+        return trail;
+    }
 }
