@@ -1,16 +1,17 @@
 package creeperbabytea.phlib.client.screen.spellwork;
 
-import creeperbabytea.phlib.TheForgotten;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import creeperbabytea.phlib.common.magic.spellwork.item.ScrollItem;
+import creeperbabytea.tealib.client.screen.ITeaScreen;
+import creeperbabytea.tealib.client.screen.ITeaScreenProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
-public class ScrollGUI extends Screen {
+public class ScrollGUI extends Screen implements ITeaScreen {
     protected final ResourceLocation bg;
     protected final int xSize;
     protected final int ySize;
@@ -20,8 +21,8 @@ public class ScrollGUI extends Screen {
     private boolean editing;
     private TextFieldWidget editSpell;
 
-    protected ScrollGUI(ITextComponent title, ScrollItem.IScrollType type) {
-        super(title);
+    public ScrollGUI(ScrollItem.IScrollType type) {
+        super(type.getTitle());
         this.bg = type.getBackgroundTexture();
         this.xSize = type.xSize();
         this.ySize = type.ySize();
@@ -30,9 +31,13 @@ public class ScrollGUI extends Screen {
     @Override
     public void init(Minecraft minecraft, int width, int height) {
         minecraft.keyboardListener.enableRepeatEvents(true);
-        //this.editSpell = new TextFieldWidget(this.font);
+        //this.editSpell = new TextFieldWidget()
 
         super.init(minecraft, width, height);
+    }
 
+    @Override
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(matrixStack);
     }
 }

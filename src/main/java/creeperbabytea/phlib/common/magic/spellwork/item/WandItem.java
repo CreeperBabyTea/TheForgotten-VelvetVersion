@@ -1,6 +1,6 @@
 package creeperbabytea.phlib.common.magic.spellwork.item;
 
-import creeperbabytea.phlib.common.init.MagicObjects;
+import creeperbabytea.phlib.common.init.magic.MagicObjects;
 import creeperbabytea.phlib.common.magic.spellwork.SpellEntry;
 import creeperbabytea.phlib.common.magic.spellwork.entity.SpellEntity;
 import creeperbabytea.phlib.common.magic.spellwork.event.event.wand.WandCastEvent;
@@ -91,13 +91,11 @@ public class WandItem extends Item {
     /** Detects spell strength multiples caused by external factors, such as the user's identity. */
     private float getMultiplier(ItemStack wand, World world, LivingEntity entity) {
         UUID owner = getOwner(wand);
-        System.out.println(owner);
         if (owner == null) {
             setOwner(wand, entity.getUniqueID());
             return 0.75F;
-        }
-        else {
-            if(owner == entity.getUniqueID()) {
+        } else {
+            if (owner == entity.getUniqueID()) {
                 return 1.0F;
             } else {
                 return 1.0F - getState(wand).getLoyalty();
@@ -107,26 +105,29 @@ public class WandItem extends Item {
 
     /** Instantaneous spells that don't need to be charged */
     private void castInstant(ItemStack wand, LivingEntity caster, float multiplier) {
-        this.castSpells(wand, caster, -1, multiplier, spell -> new SpellEntry(spell, -1, multiplier));
+        this.castSpells(wand, caster, spell -> new SpellEntry(spell, -1, multiplier));
     }
 
     /** Spells that require a charge */
     private void castCharged(ItemStack wand, LivingEntity caster, int chargeDuration, float multiplier) {
-        this.castSpells(wand, caster, chargeDuration, multiplier, spell -> new SpellEntry(spell, chargeDuration, multiplier));
+        this.castSpells(wand, caster, spell -> new SpellEntry(spell, chargeDuration, multiplier));
     }
 
-    private void castSpells(ItemStack wand, LivingEntity caster, int chargeDuration, float multiplier, Function<Spell, SpellEntry> mapping) {
+    private void castSpells(ItemStack wand, LivingEntity caster, Function<Spell, SpellEntry> toEntry) {
         WandCastEvent.Pre pre = new WandCastEvent.Pre(caster, wand);
         MinecraftForge.EVENT_BUS.post(pre);
         if (pre.isCanceled())
             return;
 
-        SpellEntry[] spells = getSpells(wand, spell -> spell instanceof ThrowableSpell).stream().map(mapping).toArray(SpellEntry[]::new);
-
-        Arrays.stream(spells).forEach(entry -> entry.get().influenceOnCaster(caster, entry.intensity()));
+        SpellEntry[] spells = getSpells(wand, spell -> spell instanceof ThrowableSpell).stream().map(toEntry).toArray(SpellEntry[]::new);
 
         SpellEntity spellEntity = new SpellEntity(caster, spells);
-        spellEntity.cast(caster, 4.0F);
+        spellEntity.cast(4.0F);
+
+        getSpells(wand, spell -> true).stream().map(toEntry).forEach(entry -> {
+            entry.get().onLocalCast(caster, entry.intensity());
+            entry.get().influenceOnCaster(caster, entry.intensity());
+        });
 
         WandCastEvent.Post post = new WandCastEvent.Post(caster, wand);
         MinecraftForge.EVENT_BUS.post(post);

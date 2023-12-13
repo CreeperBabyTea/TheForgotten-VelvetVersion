@@ -1,15 +1,21 @@
 package creeperbabytea.phlib.common.magic.spellwork.item;
 
 import creeperbabytea.phlib.TheForgotten;
-import creeperbabytea.phlib.common.init.MagicObjects;
-import creeperbabytea.phlib.common.magic.general.wizard.Capabilities;
+import creeperbabytea.phlib.client.screen.spellwork.ScrollGUI;
+import creeperbabytea.phlib.common.init.magic.MagicObjects;
+import creeperbabytea.tealib.client.screen.ITeaScreenProperties;
+import creeperbabytea.tealib.client.screen.ScreenOpener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 public class ScrollItem extends Item {
     private final IScrollType type;
@@ -21,11 +27,13 @@ public class ScrollItem extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        playerIn.getCapability(Capabilities.MAGIC_CAPABILITY).ifPresent(cap -> System.out.println(cap.innerThoughts()));
+        if (worldIn.isRemote) {
+            DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> ScreenOpener.open(new ScrollGUI(type)));
+        }
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
-    public interface IScrollType {
+    public interface IScrollType extends ITeaScreenProperties {
         ResourceLocation getBackgroundTexture();
 
         int xSize();
@@ -34,13 +42,15 @@ public class ScrollItem extends Item {
     }
 
     public enum EnumScrollTypes implements IScrollType {
-        //BAMBOO(TheForgotten.INSTANCE.modLoc("textures/gui/magic/spellwork/scroll"), 5, 5),
+        BAMBOO(new TranslationTextComponent("gui.the_forgotten.item.scroll"), TheForgotten.INSTANCE.modLoc("textures/gui/magic/spellwork/scroll.png"), 5, 5),
         ;
 
+        final ITextComponent title;
         final ResourceLocation bg;
         final int xSize, ySize;
 
-        EnumScrollTypes(ResourceLocation bg, int xSize, int ySize) {
+        EnumScrollTypes(ITextComponent title, ResourceLocation bg, int xSize, int ySize) {
+            this.title = title;
             this.bg = bg;
             this.xSize = Math.min(xSize, 5);
             this.ySize = Math.min(ySize, 5);
@@ -59,6 +69,11 @@ public class ScrollItem extends Item {
         @Override
         public int ySize() {
             return ySize;
+        }
+
+        @Override
+        public ITextComponent getTitle() {
+            return title;
         }
     }
 }

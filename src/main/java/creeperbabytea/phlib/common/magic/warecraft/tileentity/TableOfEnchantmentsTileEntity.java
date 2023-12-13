@@ -1,7 +1,6 @@
 package creeperbabytea.phlib.common.magic.warecraft.tileentity;
 
-import creeperbabytea.phlib.common.init.MagicObjects;
-import creeperbabytea.phlib.common.magic.warecraft.item.EnchantDictionaryItem;
+import creeperbabytea.phlib.common.init.magic.MagicObjects;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,7 +11,7 @@ public class TableOfEnchantmentsTileEntity extends TileEntity {
     private ItemStack dictionary = null;
 
     public TableOfEnchantmentsTileEntity() {
-        super(MagicObjects.TABLE_OF_ENCHANTMENTS_TE.get());
+        super(MagicObjects.TABLE_OF_ENCHANTMENTS_TE);
     }
 
     public void putDictionary(ItemStack dictionary) {

@@ -1,7 +1,9 @@
 {
+  "gui.the_forgotten.item.scroll": "Scroll",
   "incantation.avada_kedavra": "avadaKedavra",
   "incantation.detonare": "detonare",
   "incantation.luminous": "luminous",
   "incantation.mobilus_catia": "mobilusCatia",
+  "incantation.phantasma_transitus": "phantasmaTransitus",
   "incantation.similis_nebulas": "similisNebulas"
 }

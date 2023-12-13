@@ -8,7 +8,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraftforge.fml.RegistryObject;
 
 public class Entities {
-    public static final RegistryObject<EntityType<CatTransformingCharm.CatTransformationEntity>> CAT_TRANSFORMATION = PhilosophersObjects.ENTITIES.register("cat_transformation", () ->
+    public static final EntityType<CatTransformingCharm.CatTransformationEntity> CAT_TRANSFORMATION = PhilosophersObjects.ENTITIES.add("cat_transformation",
             EntityType.Builder.<CatTransformingCharm.CatTransformationEntity>create(CatTransformingCharm.CatTransformationEntity::new, EntityClassification.AMBIENT)
                     .disableSummoning()
                     .size(0.5F, 0.5F)

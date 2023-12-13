@@ -1,6 +1,6 @@
 package creeperbabytea.phlib.common.magic.spellwork.entity;
 
-import creeperbabytea.phlib.common.init.MagicObjects;
+import creeperbabytea.phlib.common.init.magic.MagicObjects;
 import creeperbabytea.phlib.common.magic.spellwork.SpellEntry;
 import creeperbabytea.phlib.common.magic.spellwork.spell.Spell;
 import creeperbabytea.phlib.common.magic.spellwork.spell.ThrowableSpell;
@@ -23,19 +23,25 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SpellEntity extends Entity {
-    private static final DataParameter<CompoundNBT> SPELLS = EntityDataManager.createKey(SpellEntity.class, DataSerializers.COMPOUND_NBT);
+    private static final DataParameter<CompoundNBT> SPELL_ENTITY_DATA = EntityDataManager.createKey(SpellEntity.class, DataSerializers.COMPOUND_NBT);
     private UUID owner;
     private int ownerId;
+    private List<SpellEntry> spells = new ArrayList<>();
+
     private boolean leftOwner = false;
     private int lifetime = 0;
 
-    public SpellEntity(LivingEntity owner, SpellEntry... spells) {
-        super(MagicObjects.SPELL_ENTITY.get(), owner.world);
+    private LivingEntity entity;
+
+    public SpellEntity(LivingEntity entity, SpellEntry... spells) {
+        super(MagicObjects.SPELL_ENTITY, entity.world);
 
         CompoundNBT nbt = new CompoundNBT();
         ListNBT spellsList = new ListNBT();
@@ -48,36 +54,36 @@ public class SpellEntity extends Entity {
             }
         }
         nbt.put("spells", spellsList);
-        this.dataManager.set(SPELLS, nbt);
-        this.glowing = true;
-    }
+        nbt.putUniqueId("owner", entity.getUniqueID());
+        nbt.putInt("owner_id", entity.getEntityId());
 
-    @Override
-    public void remove(boolean keepData) {
-        super.remove(keepData);
+        this.entity = entity;
+        this.owner = entity.getUniqueID();
+        this.ownerId = entity.getEntityId();
+        for (SpellEntry e : spells)
+            if (e.get() instanceof ThrowableSpell)
+                this.spells.add(e);
+
+        this.dataManager.set(SPELL_ENTITY_DATA, nbt);
+        this.glowing = true;
     }
 
     public SpellEntity(EntityType<?> entityTypeIn, World worldIn) {
         super(entityTypeIn, worldIn);
     }
 
+    public void cast(float speedFactor) {
+        speedFactor = speedFactor > 4 ? 4.0F : speedFactor;
+        this.setPosition(entity.getPosX(), entity.getPosY() + entity.getEyeHeight() * 0.65, entity.getPosZ());
+        this.setMotion(entity.getForward().mul(speedFactor, speedFactor, speedFactor));
+        this.owner = entity.getUniqueID();
+        this.ownerId = entity.getEntityId();
+        entity.world.addEntity(this);
+    }
+
     @Override
     protected void registerData() {
-        this.dataManager.register(SPELLS, new CompoundNBT());
-    }
-
-    public void cast(LivingEntity caster, float speedFactor) {
-        speedFactor = speedFactor > 4 ? 4.0F : speedFactor;
-        this.setPosition(caster.getPosX(), caster.getPosY() + caster.getEyeHeight() * 0.65, caster.getPosZ());
-        this.setMotion(caster.getForward().mul(speedFactor, speedFactor, speedFactor));
-        this.owner = caster.getUniqueID();
-        this.ownerId = caster.getEntityId();
-        caster.world.addEntity(this);
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
+        this.dataManager.register(SPELL_ENTITY_DATA, new CompoundNBT());
     }
 
     @Override
@@ -85,6 +91,8 @@ public class SpellEntity extends Entity {
         this.lifetime++;
         if (this.lifetime >= 30)
             this.remove();
+        if (this.lifetime == 1)
+            this.reloadData();
 
         RayTraceResult rayTraceResult = ProjectileHelper.func_234618_a_(this, this::canHit);
         /*if (rayTraceResult instanceof EntityRayTraceResult && ((EntityRayTraceResult) rayTraceResult).getEntity() instanceof SpellEntity) {
@@ -98,9 +106,7 @@ public class SpellEntity extends Entity {
             }
         }*/
 
-        List<SpellEntry> entries = this.getSpells();
-
-        this.hitAction(rayTraceResult, entries);
+        this.hitAction(rayTraceResult, spells);
 
         this.prevPosX = this.getPosX();
         this.prevPosY = this.getPosY();
@@ -112,25 +118,22 @@ public class SpellEntity extends Entity {
         this.setPosition(posX, posY, posZ);
 
         if (this.world.isRemote())
-            this.drawParticles(entries);
+            this.drawParticles(spells);
     }
 
     @Override
     protected void readAdditional(CompoundNBT compound) {
-        this.owner = compound.getUniqueId("owner");
-        this.ownerId = compound.getInt("owner_id");
         this.leftOwner = compound.getBoolean("left_owner");
         this.lifetime = compound.getInt("lifetime");
-        this.dataManager.set(SPELLS, compound.getCompound("spells"));
+        this.dataManager.set(SPELL_ENTITY_DATA, compound.getCompound("data"));
+        reloadData();
     }
 
     @Override
     protected void writeAdditional(CompoundNBT compound) {
-        compound.putUniqueId("owner", this.owner);
-        compound.putInt("owner_id", this.ownerId);
         compound.putBoolean("left_owner", this.leftOwner);
         compound.putInt("lifetime", this.lifetime);
-        compound.put("spells", this.dataManager.get(SPELLS));
+        compound.put("data", this.dataManager.get(SPELL_ENTITY_DATA));
     }
 
     @Override
@@ -187,12 +190,20 @@ public class SpellEntity extends Entity {
 
     @Nullable
     public LivingEntity getOwner() {
+        if (owner == null) {
+            System.out.println(this.world.isRemote);
+            return null;
+        }
+        if (world.getPlayerByUuid(owner) != null)
+            return world.getPlayerByUuid(owner);
         return (LivingEntity) this.world.getEntityByID(this.ownerId);
     }
 
-    public List<SpellEntry> getSpells() {
-        ListNBT spellsList = this.dataManager.get(SPELLS).getList("spells", 10);
-        return spellsList.stream().map(nbt -> {
+    public void reloadData() {
+        CompoundNBT data = this.dataManager.get(SPELL_ENTITY_DATA);
+
+        ListNBT spellsList = data.getList("spells", 10);
+        this.spells = spellsList.stream().map(nbt -> {
             Spell spell = SpellRegistry.getById(((CompoundNBT) nbt).getString("spell"));
             float intensity = ((CompoundNBT) nbt).getFloat("intensity");
             if (spell != null)
@@ -200,9 +211,12 @@ public class SpellEntity extends Entity {
             else
                 throw new NullPointerException("Missing spell: " + ((CompoundNBT) nbt).getString("spell"));
         }).collect(Collectors.toList());
+
+        this.owner = data.getUniqueId("owner");
+        this.ownerId = data.getInt("owner_id");
     }
 
     public int spellSize() {
-        return this.dataManager.get(SPELLS).getList("spells", 10).size();
+        return this.dataManager.get(SPELL_ENTITY_DATA).getList("spells", 10).size();
     }
 }

@@ -23,7 +23,7 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
     protected final SpellState state;
     private Color color;
     private ParticleSet charge = ParticleSet.builder().put(1, ParticleTypes.ENCHANT).build();
-    private ParticleSet cast = ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10_16.get().create(255, 255, 255, 255, 1.0F, 50)).build();
+    private ParticleSet cast = ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10_16.create(255, 255, 255, 255, 1.0F, 50)).build();
 
     public Spell(String incantation, SpellState state) {
         this.incantation = SpellRegistry.format(incantation);
@@ -42,7 +42,7 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
     public void influenceOnCaster(LivingEntity caster, float intensity) {
     }
 
-    public void onLocalCast(PlayerEntity player, float intensity) {
+    public void onLocalCast(LivingEntity player, float intensity) {
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
     @OnlyIn(Dist.CLIENT)
     public void setColor(int r, int g, int b, int a) {
         this.color = new Color(r, g, b, a);
-        this.setCastParticle(ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10_16.get().create(r, g, b, a, 1.0F, 50)).build());
+        this.setCastParticle(ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10_16.create(r, g, b, a, 1.0F, 50)).build());
     }
 
     @Nullable

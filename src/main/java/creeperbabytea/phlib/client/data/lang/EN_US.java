@@ -3,14 +3,10 @@ package creeperbabytea.phlib.client.data.lang;
 import creeperbabytea.phlib.TheForgotten;
 import creeperbabytea.phlib.common.PhilosophersObjects;
 import creeperbabytea.phlib.common.magic.spellwork.spell.Spell;
-import creeperbabytea.phlib.common.magic.spellwork.spell.ThrowableSpell;
-import creeperbabytea.tealib.registry.GeneralDeferredRegister;
+import creeperbabytea.tealib.registry.GeneralRegister;
 import creeperbabytea.tealib.util.data.ILanguageHelper;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.fml.RegistryObject;
-
-import java.util.function.Supplier;
 
 public class EN_US extends LanguageProvider implements ILanguageHelper {
     public EN_US(DataGenerator gen) {
@@ -19,14 +15,16 @@ public class EN_US extends LanguageProvider implements ILanguageHelper {
 
     @Override
     protected void addTranslations() {
-        GeneralDeferredRegister reg = PhilosophersObjects.GENERAL;
-        for (RegistryObject<Spell> spellObj : PhilosophersObjects.SPELLS.getEntries()) {
+        GeneralRegister reg = PhilosophersObjects.GENERAL;
+        for (Spell spellObj : PhilosophersObjects.SPELLS.getEntries()) {
             spell(spellObj);
         }
+
+        add("gui.the_forgotten.item.scroll", "Scroll");
     }
 
-    private void spell(Supplier<Spell> spell) {
-        add("incantation."+ spell.get().getIncantation(), format(spell.get().getIncantation()));
+    private void spell(Spell spell) {
+        add("incantation." + spell.getIncantation(), format(spell.getIncantation()));
     }
 
     @Override

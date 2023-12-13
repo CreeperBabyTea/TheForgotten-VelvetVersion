@@ -1,6 +1,6 @@
 package creeperbabytea.phlib.common.magic.spellwork.entity;
 
-import creeperbabytea.phlib.common.init.MagicObjects;
+import creeperbabytea.phlib.common.init.magic.MagicObjects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -26,7 +26,7 @@ public class ConflictSpellEntity extends Entity {
     private int ownerBId;
 
     public ConflictSpellEntity(SpellEntity A, SpellEntity B) {
-        super(MagicObjects.CONFLICT_SPELL.get(), A.world);
+        super(MagicObjects.CONFLICT_SPELL, A.world);
        // this.spellA.addAll(A.getSpells());
         //this.spellB.addAll(B.getSpells());
         this.ownerA = A.getOwner() != null ? A.getOwner().getUniqueID() : null;

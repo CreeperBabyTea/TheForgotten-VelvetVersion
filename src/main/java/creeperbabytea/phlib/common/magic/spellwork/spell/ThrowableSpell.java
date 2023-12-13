@@ -74,7 +74,7 @@ public abstract class ThrowableSpell extends Spell {
     @Override
     public void setColor(int r, int g, int b, int a) {
         super.setColor(r, g, b, a);
-        this.setTrailParticle(ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10.get().create(r, g, b, a)).put(19, ParticleTypes.COLORED_SQUARE_2.get().create(r, g, b, a)).build());
+        this.setTrailParticle(ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10.create(r, g, b, a)).put(19, ParticleTypes.COLORED_SQUARE_2.create(r, g, b, a)).build());
     }
 
     @OnlyIn(Dist.CLIENT)

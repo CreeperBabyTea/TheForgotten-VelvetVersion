@@ -1,9 +1,13 @@
 package creeperbabytea.phlib.common.magic.general.particles;
 
 import com.mojang.serialization.Codec;
+import creeperbabytea.phlib.client.particle.ColoredParticle;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.particles.ParticleType;
 
-public class ColoredParticleType extends ParticleType<ColoredParticleData> {
+import java.util.function.Supplier;
+
+public class ColoredParticleType extends ParticleType<ColoredParticleData> implements Supplier<ParticleManager.IParticleMetaFactory<ColoredParticleData>> {
     public ColoredParticleType(boolean alwaysShow) {
         super(alwaysShow, ColoredParticleData.DESERIALIZER);
     }
@@ -25,5 +29,10 @@ public class ColoredParticleType extends ParticleType<ColoredParticleData> {
 
     public ColoredParticleData create(int r, int g, int b, int a) {
         return create(r, g, b, a, 1.0F, 30);
+    }
+
+    @Override
+    public ParticleManager.IParticleMetaFactory<ColoredParticleData> get() {
+        return ColoredParticle.Factory::new;
     }
 }

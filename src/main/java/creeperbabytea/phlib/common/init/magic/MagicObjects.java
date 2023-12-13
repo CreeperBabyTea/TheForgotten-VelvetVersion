@@ -1,4 +1,4 @@
-package creeperbabytea.phlib.common.init;
+package creeperbabytea.phlib.common.init.magic;
 
 import creeperbabytea.phlib.TheForgotten;
 import creeperbabytea.phlib.common.PhilosophersObjects;
@@ -10,6 +10,7 @@ import creeperbabytea.phlib.common.magic.warecraft.block.TableOfEnchantmentsBloc
 import creeperbabytea.phlib.common.magic.warecraft.tileentity.TableOfEnchantmentsTileEntity;
 import creeperbabytea.tealib.common.objects.SingleItemEntry;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -30,12 +31,12 @@ public class MagicObjects {
     public static final ItemGroup MAGIC_GROUP = new ItemGroup("magic") {
         @Override
         public ItemStack createIcon() {
-            return WAND.get().getDefaultInstance();
+            return WAND.getDefaultInstance();
         }
     };
 
     /*----------------------------------------Spell Work----------------------------------------*/
-    public static final RegistryObject<EntityType<SpellEntity>> SPELL_ENTITY = PhilosophersObjects.ENTITIES.register("spell", () ->
+    public static final EntityType<SpellEntity> SPELL_ENTITY = PhilosophersObjects.ENTITIES.add("spell",
             EntityType.Builder.<SpellEntity>create(SpellEntity::new, EntityClassification.MISC)
                     .size(0.5F, 0.5F)
                     .disableSummoning()
@@ -44,7 +45,7 @@ public class MagicObjects {
                     .updateInterval(1)
                     .setUpdateInterval(1)
                     .build(TheForgotten.MODID + ':' + "spell"));
-    public static final RegistryObject<EntityType<ConflictSpellEntity>> CONFLICT_SPELL = PhilosophersObjects.ENTITIES.register("conflict_spell", () ->
+    public static final EntityType<ConflictSpellEntity> CONFLICT_SPELL = PhilosophersObjects.ENTITIES.add("conflict_spell",
             EntityType.Builder.<ConflictSpellEntity>create(ConflictSpellEntity::new, EntityClassification.MISC)
                     .size(0.7F, 0.7F)
                     .disableSummoning()
@@ -52,13 +53,14 @@ public class MagicObjects {
                     .build(TheForgotten.MODID + ':' + "conflict_spell"));
 
 
-    public static final SingleItemEntry WAND = PhilosophersObjects.GENERAL.register(new SingleItemEntry(new WandItem(), "wand", ""));
+    //public static final Item SCROLL = PhilosophersObjects.ITEMS.add("scroll", new ScrollItem(ScrollItem.EnumScrollTypes.BAMBOO));
+    public static final Item WAND = PhilosophersObjects.ITEMS.add("wand", new WandItem());
 
     /*----------------------------------------Ware Craft----------------------------------------*/
-    public static final RegistryObject<Block> TABLE_OF_ENCHANTMENTS = PhilosophersObjects.BLOCKS.register("table_of_enchantments", TableOfEnchantmentsBlock::new);
+    public static final Block TABLE_OF_ENCHANTMENTS = PhilosophersObjects.BLOCKS.add("table_of_enchantments",new TableOfEnchantmentsBlock());
 
-    public static final RegistryObject<TileEntityType<?>> TABLE_OF_ENCHANTMENTS_TE = PhilosophersObjects.TILE_ENTITIES.register("table_of_enchantments", () ->
-            TileEntityType.Builder.create(TableOfEnchantmentsTileEntity::new, TABLE_OF_ENCHANTMENTS.get()).build(null));
+    public static final TileEntityType<?> TABLE_OF_ENCHANTMENTS_TE = PhilosophersObjects.TILE_ENTITIES.add("table_of_enchantments",
+            TileEntityType.Builder.create(TableOfEnchantmentsTileEntity::new, TABLE_OF_ENCHANTMENTS).build(null));
 
     public static void init() {
     }

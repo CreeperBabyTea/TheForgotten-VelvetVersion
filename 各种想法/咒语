@@ -10,6 +10,7 @@ Vespertilio Rubrum 翼蝠生风
 Spectere Regenerous 浴血重生 治愈村民
 Exspiravit Locomotor 亡魂复苏 黑魔法。召唤附近的墓葬里的亡魂。
 Aether Wings 以太之翼
+Phantasma Transitus 短距离幻影移形
 
 RecordCodecBuilder.create((instance) -> instance.group(
                     Codec.INT.fieldOf("r").forGetter(ColoredParticleData::getRed),

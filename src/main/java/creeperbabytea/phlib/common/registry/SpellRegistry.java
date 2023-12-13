@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class SpellRegistry {
-    private static final Supplier<IForgeRegistry<Spell>> REGISTRY = PhilosophersObjects.SPELLS.makeRegistry("spell", () -> new RegistryBuilder<Spell>().setType(Spell.class).setDefaultKey(TheForgotten.INSTANCE.modLoc("incantation")));
+    private static final Supplier<IForgeRegistry<Spell>> REGISTRY = PhilosophersObjects.SPELLS.makeReg("spell", new RegistryBuilder<>());
     private static final Map<String, Spell> byIncantations = new HashMap<>();
 
     @Nullable

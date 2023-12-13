@@ -16,8 +16,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
 
     @Override
     protected void registerModels() {
-        for (RegistryObject<Item> object : PhilosophersObjects.ITEMS.getEntries()) {
-            Item item = object.get();
+        for (Item item : PhilosophersObjects.ITEMS.getEntries()) {
             String name = item.getRegistryName().getPath();
 
             if (item instanceof WandItem)

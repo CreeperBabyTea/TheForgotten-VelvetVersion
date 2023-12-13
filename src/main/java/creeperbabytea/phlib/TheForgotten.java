@@ -3,6 +3,7 @@ package creeperbabytea.phlib;
 import creeperbabytea.phlib.common.PhilosophersEventHandler;
 import creeperbabytea.phlib.common.PhilosophersObjects;
 import creeperbabytea.tealib.util.IModResourceHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,5 +43,9 @@ public class TheForgotten implements IModResourceHelper {
     @Override
     public String modId() {
         return MODID;
+    }
+
+    public static ResourceLocation a(String path) {
+        return new ResourceLocation(MODID, path);
     }
 }

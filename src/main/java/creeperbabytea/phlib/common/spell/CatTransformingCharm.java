@@ -43,7 +43,7 @@ public class CatTransformingCharm extends ThrowableSpell {
         private static final DataParameter<Optional<UUID>> OWNER = EntityDataManager.createKey(CatTransformationEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
         public CatTransformationEntity(PlayerEntity owner) {
-            this(Entities.CAT_TRANSFORMATION.get(), owner.world);
+            this(Entities.CAT_TRANSFORMATION, owner.world);
 
             this.dataManager.set(OWNER, Optional.of(owner.getUniqueID()));
             this.setPosition(owner.getPosX(), owner.getPosY() + 2, owner.getPosZ());
