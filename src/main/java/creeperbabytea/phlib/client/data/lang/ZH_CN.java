@@ -26,6 +26,8 @@ public class ZH_CN extends LanguageProvider implements ILanguageHelper {
 
         spell(LUMINOUS_SPELL, "荧光闪烁");
         spell(SLOW_FALLING_CHARM, "我似浮云");
+
+        add("gui.the_forgotten.item.scroll", "卷轴");
     }
 
     private void spell(Spell spell, String value) {

@@ -50,10 +50,6 @@ public class InnerThoughts implements INBTSerializable<CompoundNBT> {
         return this.perceptual;
     }
 
-    public void markChanged() {
-
-    }
-
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT base = new CompoundNBT();

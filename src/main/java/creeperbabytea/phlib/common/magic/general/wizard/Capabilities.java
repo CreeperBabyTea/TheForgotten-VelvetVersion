@@ -43,7 +43,7 @@ public class Capabilities {
     public static void onCapability(AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
         if (entity instanceof PlayerEntity)
-            event.addCapability(TheForgotten.INSTANCE.modLoc("magic"), new MagicCapabilityProvider());
+            event.addCapability(TheForgotten.modLocation("magic"), new MagicCapabilityProvider());
     }
 
     public static void onPlayerCloned(PlayerEvent.Clone event) {

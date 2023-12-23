@@ -16,12 +16,12 @@ public class SpellEntry {
         if (!(spell instanceof IChargeableSpell))
             throw new IllegalArgumentException("Cannot create a SpellEntry for an unchargeable spell with a charge: " + spell);
         this.spell = spell;
-        this.intensity = ((IChargeableSpell) spell).chargeEquation(charge);
+        this.intensity = ((IChargeableSpell) spell).chargeIntensityEquation(charge);
     }
 
     public SpellEntry(Spell spell, int charge, float multiplier) {
         this.spell = spell;
-        this.intensity = spell instanceof IChargeableSpell ? ((IChargeableSpell) spell).chargeEquation(charge) * multiplier : multiplier;
+        this.intensity = spell instanceof IChargeableSpell ? ((IChargeableSpell) spell).chargeIntensityEquation(charge) * multiplier : multiplier;
     }
 
     public Spell get() {

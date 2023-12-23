@@ -2,14 +2,15 @@ package creeperbabytea.phlib.common.magic.spellwork.item;
 
 import creeperbabytea.phlib.common.init.magic.MagicObjects;
 import creeperbabytea.phlib.common.magic.spellwork.SpellEntry;
+import creeperbabytea.phlib.common.magic.spellwork.Util;
 import creeperbabytea.phlib.common.magic.spellwork.entity.SpellEntity;
 import creeperbabytea.phlib.common.magic.spellwork.event.event.wand.WandCastEvent;
 import creeperbabytea.phlib.common.magic.spellwork.item.wand.WandMaterial;
 import creeperbabytea.phlib.common.magic.spellwork.item.wand.WandState;
 import creeperbabytea.phlib.common.magic.spellwork.spell.IChargeableSpell;
 import creeperbabytea.phlib.common.magic.spellwork.spell.Spell;
+import creeperbabytea.phlib.common.magic.spellwork.spell.SpellSet;
 import creeperbabytea.phlib.common.magic.spellwork.spell.ThrowableSpell;
-import creeperbabytea.phlib.common.registry.SpellRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -17,8 +18,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -26,9 +25,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class WandItem extends Item {
     public WandItem() {
@@ -49,7 +47,7 @@ public class WandItem extends Item {
 
     @Override
     public UseAction getUseAction(ItemStack stack) {
-        return getSpells(stack, spell -> spell instanceof IChargeableSpell).isEmpty() ? UseAction.NONE : UseAction.SPEAR;
+        return stack.getOrCreateTag().getBoolean("charge") ? UseAction.SPEAR : UseAction.NONE;
     }
 
     @Override
@@ -57,6 +55,12 @@ public class WandItem extends Item {
         if (handIn != Hand.MAIN_HAND)
             return ActionResult.resultFail(playerIn.getHeldItem(handIn));
         ItemStack wand = playerIn.getHeldItem(handIn);
+
+        if (playerIn.getHeldItem(Hand.OFF_HAND).getItem() instanceof ScrollItem)
+            wand.getOrCreateTag().putBoolean("charge", !Util.getScrollSpells(playerIn.getHeldItem(Hand.OFF_HAND), spell -> spell instanceof IChargeableSpell).isEmpty());
+        else
+            wand.getOrCreateTag().putBoolean("charge", !Util.getWandSpells(wand, spell -> spell instanceof IChargeableSpell).isEmpty());
+
         float multiplier = this.getMultiplier(wand, worldIn, playerIn);
 
         if (this.getUseAction(wand) == UseAction.SPEAR) {
@@ -70,8 +74,14 @@ public class WandItem extends Item {
 
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        if (player.world.isRemote())
-            getSpells(stack, spell -> true).forEach(spell -> spell.drawChargeEffect(stack, player, getUseDuration(stack) - count));
+        if (player.world.isRemote()) {
+            SpellSet spells;
+            if (player.getHeldItem(Hand.OFF_HAND).getItem() instanceof ScrollItem)
+                spells = Util.getScrollSpells(player.getHeldItem(Hand.OFF_HAND), spell -> spell instanceof IChargeableSpell);
+            else
+                spells = Util.getWandSpells(stack, spell -> spell instanceof IChargeableSpell);
+            spells.forEach(spell -> ((IChargeableSpell) spell).drawChargeEffect(stack, player, getUseDuration(stack) - count));
+        }
     }
 
     @Override
@@ -88,7 +98,9 @@ public class WandItem extends Item {
         return 72000;
     }
 
-    /** Detects spell strength multiples caused by external factors, such as the user's identity. */
+    /**
+     * Detects spell strength multiples caused by external factors, such as the user's identity.
+     */
     private float getMultiplier(ItemStack wand, World world, LivingEntity entity) {
         UUID owner = getOwner(wand);
         if (owner == null) {
@@ -103,12 +115,16 @@ public class WandItem extends Item {
         }
     }
 
-    /** Instantaneous spells that don't need to be charged */
+    /**
+     * Instantaneous spells that don't need to be charged
+     */
     private void castInstant(ItemStack wand, LivingEntity caster, float multiplier) {
         this.castSpells(wand, caster, spell -> new SpellEntry(spell, -1, multiplier));
     }
 
-    /** Spells that require a charge */
+    /**
+     * Spells that require a charge
+     */
     private void castCharged(ItemStack wand, LivingEntity caster, int chargeDuration, float multiplier) {
         this.castSpells(wand, caster, spell -> new SpellEntry(spell, chargeDuration, multiplier));
     }
@@ -119,39 +135,26 @@ public class WandItem extends Item {
         if (pre.isCanceled())
             return;
 
-        SpellEntry[] spells = getSpells(wand, spell -> spell instanceof ThrowableSpell).stream().map(toEntry).toArray(SpellEntry[]::new);
+        SpellSet throwableSpells;
+        SpellSet localSpells;
 
-        SpellEntity spellEntity = new SpellEntity(caster, spells);
+        if (caster.getHeldItem(Hand.OFF_HAND).getItem() instanceof ScrollItem) {
+            ItemStack scroll = caster.getHeldItem(Hand.OFF_HAND);
+            throwableSpells = Util.getScrollSpells(scroll, spell -> spell instanceof ThrowableSpell);
+            localSpells = Util.getScrollSpells(scroll, spell -> !(spell instanceof ThrowableSpell));
+        } else {
+            throwableSpells = Util.getWandSpells(wand, spell -> spell instanceof ThrowableSpell);
+            localSpells = Util.getScrollSpells(wand, spell -> !(spell instanceof ThrowableSpell));
+        }
+
+        SpellEntity spellEntity = new SpellEntity(caster, throwableSpells.stream().map(toEntry).toArray(SpellEntry[]::new));
         spellEntity.cast(4.0F);
 
-        getSpells(wand, spell -> true).stream().map(toEntry).forEach(entry -> {
-            entry.get().onLocalCast(caster, entry.intensity());
-            entry.get().influenceOnCaster(caster, entry.intensity());
-        });
+        throwableSpells.stream().map(toEntry).forEach(entry -> entry.get().onLocalCast(caster, entry.intensity()));
+        localSpells.stream().map(toEntry).forEach(entry -> entry.get().onLocalCast(caster, entry.intensity()));
 
         WandCastEvent.Post post = new WandCastEvent.Post(caster, wand);
         MinecraftForge.EVENT_BUS.post(post);
-    }
-
-    public static void setSpells(ItemStack wand, List<Spell> spells) {
-        ListNBT list = new ListNBT();
-        spells.forEach(spell -> list.add(StringNBT.valueOf(Objects.requireNonNull(spell.getRegistryName()).toString())));
-        CompoundNBT nbt = wand.getOrCreateTag();
-        nbt.remove("spells");
-        nbt.put("spells", list);
-    }
-
-    private static List<Spell> getSpells(ItemStack wand, Predicate<Spell> predicate) {
-        List<Spell> spells = new ArrayList<>();
-        if (wand.getTag() != null) {
-            ListNBT list = wand.getTag().getList("spells", 8);
-            list.forEach(id -> {
-                Spell spell = SpellRegistry.getById(id.getString());
-                if (spell != null && predicate.test(spell))
-                    spells.add(spell);
-            });
-        }
-        return spells;
     }
 
     private static void setOwner(ItemStack wand, UUID owner) {

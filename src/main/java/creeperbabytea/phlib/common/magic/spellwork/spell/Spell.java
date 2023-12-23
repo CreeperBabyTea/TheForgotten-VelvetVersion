@@ -22,7 +22,6 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
     protected final String incantation;
     protected final SpellState state;
     private Color color;
-    private ParticleSet charge = ParticleSet.builder().put(1, ParticleTypes.ENCHANT).build();
     private ParticleSet cast = ParticleSet.builder().put(1, ParticleTypes.COLORED_RIPPLE_2_10_16.create(255, 255, 255, 255, 1.0F, 50)).build();
 
     public Spell(String incantation, SpellState state) {
@@ -39,33 +38,7 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
         return incantation;
     }
 
-    public void influenceOnCaster(LivingEntity caster, float intensity) {
-    }
-
     public void onLocalCast(LivingEntity player, float intensity) {
-    }
-
-    /**
-     * <p>Special effects drawn while the wand is charging. </p>
-     */
-    @OnlyIn(Dist.CLIENT)
-    public void drawChargeEffect(ItemStack wand, LivingEntity owner, int tick) {
-        ParticleSet cast = this.getChargeParticle(owner, tick);
-        if (cast == null)
-            return;
-        Vector3d[] relativePos = this.chargeParticleEquation(tick, owner, wand);
-        if (relativePos != null) {
-            for (Vector3d d : relativePos) {
-                Vector3d pos = SpatialVectors.rotate(d, owner).add(owner.getPosX(), owner.getPosY() + owner.getEyeHeight(), owner.getPosZ());
-                cast.draw((ClientWorld) owner.world, true, pos.x, pos.y, pos.z, 0.0D, 0.0D, 0.0D);
-            }
-        }
-    }
-
-    @Nullable
-    @OnlyIn(Dist.CLIENT)
-    public Vector3d[] chargeParticleEquation(int tick, LivingEntity owner, ItemStack wand) {
-        return new Vector3d[]{new Vector3d(1, 0, 0)};
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -81,19 +54,8 @@ public abstract class Spell extends ForgeRegistryEntry<Spell> implements ISpell 
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setChargeParticle(@Nullable ParticleSet cast) {
-        this.charge = cast;
-    }
-
-    @OnlyIn(Dist.CLIENT)
     public void setCastParticle(ParticleSet cast) {
         this.cast = cast;
-    }
-
-    @Nullable
-    @OnlyIn(Dist.CLIENT)
-    public ParticleSet getChargeParticle(LivingEntity owner, int tick) {
-        return this.charge;
     }
 
     @OnlyIn(Dist.CLIENT)

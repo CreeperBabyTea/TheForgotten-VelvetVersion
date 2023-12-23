@@ -1,5 +1,6 @@
 package creeperbabytea.phlib.common.spell;
 
+import creeperbabytea.phlib.common.magic.general.particles.ParticleSet;
 import creeperbabytea.phlib.common.magic.spellwork.SpellState;
 import creeperbabytea.phlib.common.magic.spellwork.entity.SpellEntity;
 import creeperbabytea.phlib.common.magic.spellwork.spell.IChargeableSpell;
@@ -7,6 +8,8 @@ import creeperbabytea.phlib.common.magic.spellwork.spell.ThrowableSpell;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.Explosion;
+
+import javax.annotation.Nullable;
 
 public class ExplosionSpell extends ThrowableSpell implements IChargeableSpell {
     public ExplosionSpell() {

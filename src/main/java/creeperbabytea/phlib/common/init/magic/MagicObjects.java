@@ -8,16 +8,13 @@ import creeperbabytea.phlib.common.magic.spellwork.item.ScrollItem;
 import creeperbabytea.phlib.common.magic.spellwork.item.WandItem;
 import creeperbabytea.phlib.common.magic.warecraft.block.TableOfEnchantmentsBlock;
 import creeperbabytea.phlib.common.magic.warecraft.tileentity.TableOfEnchantmentsTileEntity;
-import creeperbabytea.tealib.common.objects.SingleItemEntry;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.fml.RegistryObject;
 
 /**
  * <p>This class is where I put the functional objects as the implementation of the mod itself.</p>
@@ -53,7 +50,7 @@ public class MagicObjects {
                     .build(TheForgotten.MODID + ':' + "conflict_spell"));
 
 
-    //public static final Item SCROLL = PhilosophersObjects.ITEMS.add("scroll", new ScrollItem(ScrollItem.EnumScrollTypes.BAMBOO));
+    public static final Item SCROLL = PhilosophersObjects.ITEMS.add("scroll", new ScrollItem(ScrollItem.ScrollType.BAMBOO));
     public static final Item WAND = PhilosophersObjects.ITEMS.add("wand", new WandItem());
 
     /*----------------------------------------Ware Craft----------------------------------------*/

@@ -6,13 +6,7 @@ import creeperbabytea.tealib.util.IModResourceHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +39,15 @@ public class TheForgotten implements IModResourceHelper {
         return MODID;
     }
 
-    public static ResourceLocation a(String path) {
+    public static ResourceLocation modLocation(String path) {
         return new ResourceLocation(MODID, path);
+    }
+
+    public static ResourceLocation forgeLocation(String path) {
+        return new ResourceLocation("forge", path);
+    }
+
+    public static ResourceLocation mcLocation(String path) {
+        return new ResourceLocation("minecraft", path);
     }
 }

@@ -1,53 +1,54 @@
 package creeperbabytea.phlib.common.magic.spellwork.network;
 
-import creeperbabytea.phlib.common.magic.spellwork.Util;
-import creeperbabytea.phlib.common.magic.spellwork.spell.SpellSet;
-import creeperbabytea.phlib.common.registry.SpellRegistry;
+import creeperbabytea.phlib.common.magic.spellwork.item.scroll.ScrollSlot;
+import creeperbabytea.phlib.common.magic.spellwork.item.scroll.ScrollState;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-/**
- * The player yells a spell on the client, gets the translation key of the spell on the client,
- * and passes the translation key to the server to complete spell's operation on the server.
- */
-public class ShoutIncantationPack {
+public class SaveScrollPack {
+    private final boolean isMainHand;
+    private final int xIndex;
+    private final int yIndex;
     private final List<String> spells;
 
-    public ShoutIncantationPack(List<String> spells) {
+    public SaveScrollPack(boolean isMainHand, int xIndex, int yIndex, List<String> spells) {
+        this.isMainHand = isMainHand;
+        this.xIndex = xIndex;
+        this.yIndex = yIndex;
         this.spells = spells;
     }
 
     public void encode(PacketBuffer buffer) {
+        buffer.writeBoolean(isMainHand);
+        buffer.writeInt(xIndex);
+        buffer.writeInt(yIndex);
         buffer.writeInt(this.spells.size());
         this.spells.forEach(buffer::writeString);
     }
 
-    public static ShoutIncantationPack decode(PacketBuffer buffer) {
-        UUID owner = buffer.readUniqueId();
+    public static SaveScrollPack decode(PacketBuffer buffer) {
+        boolean isMainHand = buffer.readBoolean();
+        int xIndex = buffer.readInt();
+        int yIndex = buffer.readInt();
         List<String> spells = new ArrayList<>();
         int size = buffer.readInt();
         for (int i = 0; i < size; i++) {
             spells.add(buffer.readString());
         }
-        return new ShoutIncantationPack(spells);
+        return new SaveScrollPack(isMainHand, xIndex, yIndex, spells);
     }
 
     public void handler(Supplier<NetworkEvent.Context> context) {
         context.get().enqueueWork(() -> {
             ServerPlayerEntity player = context.get().getSender();
             if (player != null) {
-                ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
-                Util.setWandSpells(stack, new SpellSet(this.spells.stream().map(SpellRegistry::getByIncantation).filter(Objects::nonNull).collect(Collectors.toList())));
+                ScrollState.from(player.getHeldItem(isMainHand ? Hand.MAIN_HAND : Hand.OFF_HAND)).putSlot(xIndex, yIndex, new ScrollSlot(spells.toArray(new String[0])));
                 player.sendContainerToPlayer(player.container);
             }
         });

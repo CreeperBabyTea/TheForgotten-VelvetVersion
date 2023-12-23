@@ -38,7 +38,7 @@ public class SpellWorkEventHandler {
         if (player != null && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof WandItem) {
             List<String> spells = ClientSpellTranslation.translateAll(ClientSpellTranslation.formatClientMsg(event.getMessage()));
             if (!spells.isEmpty() && spells.stream().allMatch(Objects::nonNull)) {
-                Networking.INSTANCE.sendToServer(new ShoutIncantationPack(player.getUniqueID(), spells));
+                Networking.INSTANCE.sendToServer(new ShoutIncantationPack(spells));
             }
         }
     }

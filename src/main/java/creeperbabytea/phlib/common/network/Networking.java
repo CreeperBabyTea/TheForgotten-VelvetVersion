@@ -1,6 +1,7 @@
 package creeperbabytea.phlib.common.network;
 
 import creeperbabytea.phlib.TheForgotten;
+import creeperbabytea.phlib.common.magic.spellwork.network.SaveScrollPack;
 import creeperbabytea.phlib.common.magic.spellwork.network.ShoutIncantationPack;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -17,8 +18,9 @@ public class Networking {
     }
 
     public static void register() {
-        INSTANCE = NetworkRegistry.newSimpleChannel(TheForgotten.INSTANCE.modLoc("networking"), () -> VERSION, v -> v.equals(VERSION), v -> v.equals(VERSION));
+        INSTANCE = NetworkRegistry.newSimpleChannel(TheForgotten.modLocation("networking"), () -> VERSION, v -> v.equals(VERSION), v -> v.equals(VERSION));
         INSTANCE.messageBuilder(ShoutIncantationPack.class, nextId()).encoder(ShoutIncantationPack::encode).decoder(ShoutIncantationPack::decode).consumer(ShoutIncantationPack::handler).add();
+        INSTANCE.messageBuilder(SaveScrollPack.class, nextId()).encoder(SaveScrollPack::encode).decoder(SaveScrollPack::decode).consumer(SaveScrollPack::handler).add();
     }
 
     public static void addListener(IEventBus mod) {

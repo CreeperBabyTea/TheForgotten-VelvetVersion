@@ -1,6 +1,7 @@
 package creeperbabytea.phlib.common.spell;
 
 import creeperbabytea.phlib.common.init.ParticleTypes;
+import creeperbabytea.phlib.common.magic.darkarts.IDarkArt;
 import creeperbabytea.phlib.common.magic.general.particles.ParticleSet;
 import creeperbabytea.phlib.common.magic.general.wizard.Capabilities;
 import creeperbabytea.phlib.common.magic.general.wizard.IMagicCapability;
@@ -20,7 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
-public class KillingCurse extends ThrowableSpell implements IChargeableSpell {
+public class KillingCurse extends ThrowableSpell implements IChargeableSpell, IDarkArt {
     public KillingCurse() {
         super("avada kedavra", new SpellState(8.9F, -1.0F).setType(EnumSpellType.CURSE));
         this.setColor(0, 255, 0, 255);
@@ -28,12 +29,12 @@ public class KillingCurse extends ThrowableSpell implements IChargeableSpell {
 
     @Override
     public void onHitEntity(EntityRayTraceResult result, float intensity, SpellEntity spellEntity) {
-        if (intensity > 0.9)
+        //if (intensity > 0.9)
             result.getEntity().onKillCommand();
     }
 
     @Override
-    public void influenceOnCaster(LivingEntity caster, float intensity) {
+    public void onLocalCast(LivingEntity caster, float intensity) {
         if (caster instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) caster;
             LazyOptional<IMagicCapability> capability = player.getCapability(Capabilities.MAGIC_CAPABILITY);
@@ -45,6 +46,7 @@ public class KillingCurse extends ThrowableSpell implements IChargeableSpell {
     @Override
     @OnlyIn(Dist.CLIENT)
     public Vector3d[] chargeParticleEquation(int tick, LivingEntity owner, ItemStack wand) {
+        tick ++;
         double d0 = Math.log(0.1 * tick);
         double d1 = Math.log(0.01 * tick);
         double d2 = Math.cos(d0);

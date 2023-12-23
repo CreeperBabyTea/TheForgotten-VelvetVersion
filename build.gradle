@@ -9,7 +9,6 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = '0.1'
@@ -122,7 +121,8 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
-    implementation fg.deobf('creeperbabytea.tea_lib:TeaLib:0.0.1')
+    implementation fg.deobf("creeperbabytea.tea_lib:TeaLib:${tea_lib_version}")
+    runtimeOnly fg.deobf("com.mcf.davidee.nbtedit:NBTEdit-master:1.16.5-2.0.1")
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -164,6 +164,22 @@ jar {
 jar.finalizedBy('reobfJar') 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
+
+java {
+    withSourcesJar()
+}
+
+tasks.register('deobfJar', Jar) { // Generate deobfuscated
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+artifacts {
+    sourcesJar
+    deobfJar
+}
+
+jar.finalizedBy('deobfJar')
 
 publishing {
     publications {

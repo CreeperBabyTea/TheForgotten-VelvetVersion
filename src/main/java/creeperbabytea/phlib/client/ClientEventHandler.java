@@ -21,6 +21,6 @@ public class ClientEventHandler {
     public static void onClientSetup(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(MagicObjects.SPELL_ENTITY, NonModelRenderer::new);
         //TODO:
-        RenderingRegistry.registerEntityRenderingHandler(Entities.CAT_TRANSFORMATION, manager -> new EntityModelRenderer<>(manager, TheForgotten.INSTANCE.modLoc("textures/entity/functional/cat_transform.png"), new CatTransformationModel()));
+        RenderingRegistry.registerEntityRenderingHandler(Entities.CAT_TRANSFORMATION, manager -> new EntityModelRenderer<>(manager, TheForgotten.modLocation("textures/entity/functional/cat_transform.png"), new CatTransformationModel()));
     }
 }
