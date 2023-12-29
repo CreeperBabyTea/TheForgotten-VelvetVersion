@@ -23,7 +23,7 @@ public class HotKeys {
                     }
                 }
             }));
-    public static final HotKey SCROLL_SEL_Y = make(new HotKey("key.scroll.sel.y", GLFW.GLFW_KEY_Z, "key.categories.magic")
+    public static final HotKey SCROLL_SEL_Y = make(new HotKey("key.scroll.sel.y", GLFW.GLFW_KEY_X, "key.categories.magic")
             .serverAction((player, world, info) -> {
                 ItemStack stack = player.getHeldItem(Hand.OFF_HAND);
                 if (stack.getItem() instanceof ScrollItem) {

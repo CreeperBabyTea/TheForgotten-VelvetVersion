@@ -61,7 +61,6 @@ public class ScrollItem extends Item {
             tag.putInt("current_y", y);
     }
 
-    //TODO: 完善一下向量相关的数学支持
     public static int[] getCurrentSlot(ItemStack scroll) {
         CompoundNBT tag = scroll.getOrCreateTag();
         return new int[]{tag.getInt("current_x"), tag.getInt("current_y")};

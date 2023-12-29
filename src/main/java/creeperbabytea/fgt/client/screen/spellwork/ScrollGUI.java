@@ -10,6 +10,7 @@ import creeperbabytea.fgt.common.magic.spellwork.network.SaveScrollPack;
 import creeperbabytea.fgt.common.network.Networking;
 import creeperbabytea.tealib.client.screen.ITeaScreen;
 import creeperbabytea.tealib.client.screen.TScreen;
+import creeperbabytea.tealib.util.math.vector.Vector2i;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -39,7 +40,7 @@ public class ScrollGUI extends TScreen implements ITeaScreen {
     private Button save;
     private Button exit;
 
-    private final ItemStack stack;
+    private ItemStack stack;
     private final Hand handIn;
     private ScrollState scroll;
 
@@ -84,30 +85,30 @@ public class ScrollGUI extends TScreen implements ITeaScreen {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         Minecraft.getInstance().textureManager.bindTexture(this.bg);
         RenderSystem.blendColor(1, 1, 1, 0.1F);
-        blit(matrixStack, xOffset, yOffset, 0, 0, textureWidth - 34, textureHeight - 34, textureWidth * 2, textureHeight * 2);
+        blit(matrixStack, xOffset, yOffset, 0, 0, textureWidth, textureHeight, 512, 512);
 
         if (editing) {
-            ScrollSlot slot = scroll.getSlot(xIndex, yIndex);
-            if (!slot.getSpells().isEmpty()) {
-                StringBuilder sb = new StringBuilder();
-                slot.getSpells().forEach(s -> {
-                    sb.append(new TranslationTextComponent("incantation." + s).getString());
-                    sb.append('|');
-                });
-                spellText.setText(sb.toString());
+            if (spellText.getText().isEmpty()) {
+                ScrollSlot slot = scroll.getSlot(xIndex, yIndex);
+                if (!slot.getSpells().isEmpty()) {
+                    StringBuilder sb = new StringBuilder();
+                    slot.getSpells().forEach(s -> {
+                        sb.append(new TranslationTextComponent("incantation." + s).getString());
+                        sb.append('|');
+                    });
+                    spellText.writeText(sb.toString());
+                }
             }
             spellText.render(matrixStack, mouseX, mouseY, partialTicks);
-
             super.render(matrixStack, mouseX, mouseY, partialTicks);
-        } else {
-            int[] pos = calcIndex(mouseX, mouseY);
-            for (int x = 0; x < xSize; x++) {
-                for (int y = 0; y < ySize; y++) {
-                    //if (x == pos[0] && y == pos[1])
-                    //    blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 41, 40, 40, 40, 40);
-                    //else
-                    //blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 0, 40, 40, 40, 40);
-                }
+        }
+        Vector2i pos = calcIndex(mouseX, mouseY);
+        for (int x = 0; x < xSize; x++) {
+            for (int y = 0; y < ySize; y++) {
+                if (x == pos.x && y == pos.y && !editing)
+                    blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 40, 40, 40, 512, 512);
+                else
+                    blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 0, 40, 40, 512, 512);
             }
         }
     }
@@ -115,10 +116,10 @@ public class ScrollGUI extends TScreen implements ITeaScreen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!editing) {
-            int[] pos = calcIndex(mouseX, mouseY);
-            if (pos[0] != -1 && pos[1] != -1) {
-                xIndex = pos[0];
-                yIndex = pos[1];
+            Vector2i pos = calcIndex(mouseX, mouseY);
+            if (pos.x != -1 && pos.y != -1) {
+                xIndex = pos.x;
+                yIndex = pos.y;
                 editing = true;
             }
         }
@@ -127,23 +128,23 @@ public class ScrollGUI extends TScreen implements ITeaScreen {
     }
 
     private void calcPosition() {
-        this.xOffset = (width - textureWidth) / 2 + 16;
-        this.yOffset = (height - textureHeight) / 2 + 16;
+        this.xOffset = (width - textureWidth) / 2;
+        this.yOffset = (height - textureHeight) / 2;
     }
 
-    private int[] calcIndex(double x, double y) {
-        int cx = (int) x;
-        int cy = (int) x;
-        cx = (cx - xOffset - 13) * 40 / 33;
-        cy = (cy - yOffset - 13) * 40 / 33;
-        if (cx < 0 || cy < 0 || cx % 48 > 40 || cy % 48 > 40)
-            return new int[]{-1, -1};
-        int xIndex = Math.min(cx / 48, xSize - 1);
-        int yIndex = Math.min(cy / 48, ySize - 1);
-        return new int[]{xIndex, yIndex};
+    private Vector2i calcIndex(double x, double y) {
+        x -= xOffset + 16;
+        y -= yOffset + 16;
+        if (x < 0 || y < 0 || x % 48 > 40 || y % 48 > 40)
+            return new Vector2i(-1, -1);
+        int xIndex = Math.min((int) (x / 48), xSize - 1);
+        int yIndex = Math.min((int) (y / 48), ySize - 1);
+        return new Vector2i(xIndex, yIndex);
     }
 
     private void reload() {
+        assert Minecraft.getInstance().player != null;
+        this.stack = Minecraft.getInstance().player.getHeldItem(handIn);
         this.scroll = ScrollState.from(stack);
     }
 
@@ -152,5 +153,10 @@ public class ScrollGUI extends TScreen implements ITeaScreen {
         this.yIndex = -1;
         this.editing = false;
         this.spellText.setText("");
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }
