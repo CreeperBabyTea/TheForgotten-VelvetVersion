@@ -26,6 +26,10 @@ public class EN_US extends LanguageProvider implements ILanguageHelper {
         }
 
         add("gui.the_forgotten.item.scroll", "Scroll");
+        add("key.scroll.sel.x", "Scroll Selection X");
+        add("key.scroll.sel.y", "Scroll Selection Y");
+        add("msg.scroll.sel.x", "Select the scroll x coordinate to %d");
+        add("msg.scroll.sel.y", "Select the scroll y coordinate to %d");
     }
 
     private void spell(Spell spell) {

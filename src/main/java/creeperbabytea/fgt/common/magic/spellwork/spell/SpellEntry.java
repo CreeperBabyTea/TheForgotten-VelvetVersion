@@ -5,7 +5,7 @@ import creeperbabytea.fgt.common.magic.spellwork.spell.Spell;
 
 public class SpellEntry {
     private final Spell spell;
-    private final float intensity;
+    private float intensity;
 
     public SpellEntry(Spell spell, float intensity) {
         this.spell = spell;
@@ -22,6 +22,13 @@ public class SpellEntry {
     public SpellEntry(Spell spell, int charge, float multiplier) {
         this.spell = spell;
         this.intensity = spell instanceof IChargeableSpell ? ((IChargeableSpell) spell).chargeIntensityEquation(charge) * multiplier : multiplier;
+    }
+
+    public float mulIntensity(float multiplier) {
+        if (multiplier < 0)
+            return intensity;
+        intensity *= multiplier;
+        return intensity;
     }
 
     public Spell get() {

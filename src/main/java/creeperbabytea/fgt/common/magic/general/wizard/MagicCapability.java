@@ -15,10 +15,12 @@ public class MagicCapability implements IMagicCapability {
         return this.innerThoughts;
     }
 
+    @Override
     public SpellProficiency spellProficiency() {
         return spellProficiency;
     }
 
+    @Override
     public DarkHeart darkHeart() {
         return darkHeart;
     }

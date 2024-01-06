@@ -1,40 +1,69 @@
 package creeperbabytea.fgt.common.world.gen.feature.tree;
 
-import com.mojang.serialization.Codec;
 import creeperbabytea.fgt.common.init.Blocks;
-import net.minecraft.block.trees.OakTree;
-import net.minecraft.block.trees.Tree;
+import creeperbabytea.tealib.common.world.gen.feature.tree.*;
+import creeperbabytea.tealib.util.math.WeighedRandBreaker;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.template.BlockMatchRuleTest;
 
-import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
-public class SkywardGazingTree extends Feature<NoFeatureConfig> {
+public class SkywardGazingTree extends TreeFeature {
     public SkywardGazingTree() {
-        super(NoFeatureConfig.CODEC);
+        super(TreeFeatureConfig.CODEC, new Truck(), new Leaves());
     }
 
     @Override
-    public boolean generate(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        Random rnd = reader.getRandom();
-        int height = rnd.nextInt(255 - pos.getY());
+    public boolean generate(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, TreeFeatureConfig config) {
+        return super.generate(reader, generator, rand, pos, config);
+    }
 
-        Map<Direction, Boolean> stretching = new EnumMap<>(Direction.class);
-        for (int i = 0; i < height; i++) {
-            reader.setBlockState(pos, Blocks.OAK_LOG.getDefaultState(), 2);
-            for (Direction dir : Direction.Plane.HORIZONTAL) {
-                //if (rnd.nextDouble() > )
-            }
+    public static class Truck extends TruckFeature {
+        public Truck() {
+            super();
         }
-        return false;
+
+        @Override
+        public BlockPos grow(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos blockPos, TreeFeatureConfig treeConfig) {
+            TruckFeatureConfig config = treeConfig.getTruck();
+            Random rnd = reader.getRandom();
+            int height = rnd.nextInt(40 - blockPos.getY()) + 10;
+
+            Map<Direction, WeighedRandBreaker> stretching = new EnumMap<>(Direction.class);
+            stretching.put(Direction.EAST, new WeighedRandBreaker(rand, height));
+            stretching.put(Direction.WEST, new WeighedRandBreaker(rand, height));
+            stretching.put(Direction.SOUTH, new WeighedRandBreaker(rand, height));
+            stretching.put(Direction.NORTH, new WeighedRandBreaker(rand, height));
+            for (int i = 0; i < height; i++) {
+                reader.setBlockState(blockPos.up(i), config.getTruck(), 3);
+                for (Direction dir : Direction.Plane.HORIZONTAL) {
+                    if (stretching.get(dir) != null && stretching.get(dir).step()) {
+                        place(reader, blockPos.up(i), config.getTruck());
+                    } else
+                        stretching.remove(dir);
+                }
+            }
+            return blockPos.up(height);
+        }
+    }
+
+    public static class Leaves extends LeavesFeature {
+        public Leaves() {
+            super();
+        }
+
+        @Override
+        public BlockPos grow(ISeedReader reader, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, TreeFeatureConfig treeConfig) {
+            Feature.ORE.generate(reader, chunkGenerator, random, blockPos, new OreFeatureConfig(new BlockMatchRuleTest(Blocks.AIR), treeConfig.getLeaves().getLeaves(), 5));
+
+            return blockPos;
+        }
     }
 }

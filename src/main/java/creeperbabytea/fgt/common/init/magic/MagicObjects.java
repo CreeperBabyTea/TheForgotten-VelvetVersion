@@ -7,7 +7,9 @@ import creeperbabytea.fgt.common.magic.spellwork.entity.SpellEntity;
 import creeperbabytea.fgt.common.magic.spellwork.item.ScrollItem;
 import creeperbabytea.fgt.common.magic.spellwork.item.WandItem;
 import creeperbabytea.fgt.common.magic.warecraft.block.TableOfEnchantmentsBlock;
+import creeperbabytea.fgt.common.magic.warecraft.item.EnchantDictionaryItem;
 import creeperbabytea.fgt.common.magic.warecraft.tileentity.TableOfEnchantmentsTileEntity;
+import creeperbabytea.tealib.common.objects.collections.BlockCollection;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -54,10 +56,12 @@ public class MagicObjects {
     public static final Item WAND = ForgottenObjects.ITEMS.add("wand", new WandItem());
 
     /*----------------------------------------Ware Craft----------------------------------------*/
-    public static final Block TABLE_OF_ENCHANTMENTS = ForgottenObjects.BLOCKS.add("table_of_enchantments",new TableOfEnchantmentsBlock());
+    public static final Item ENCHANTMENT_DICTIONARY = ForgottenObjects.ITEMS.add("enchantment_dictionary", new EnchantDictionaryItem());
+
+    public static final BlockCollection TABLE_OF_ENCHANTMENTS = ForgottenObjects.GENERAL.add(new BlockCollection(new TableOfEnchantmentsBlock(), MAGIC_GROUP, "table_of_enchantments", ""));
 
     public static final TileEntityType<?> TABLE_OF_ENCHANTMENTS_TE = ForgottenObjects.TILE_ENTITIES.add("table_of_enchantments",
-            TileEntityType.Builder.create(TableOfEnchantmentsTileEntity::new, TABLE_OF_ENCHANTMENTS).build(null));
+            TileEntityType.Builder.create(TableOfEnchantmentsTileEntity::new, TABLE_OF_ENCHANTMENTS.getBlock().get()).build(null));
 
     public static void init() {
     }

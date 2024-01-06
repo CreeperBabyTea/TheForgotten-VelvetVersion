@@ -1,9 +1,11 @@
 {
   "gui.the_forgotten.item.scroll": "\u5377\u8F74",
-  "incantation.avada_kedavra": "\u963F\u74E6\u8FBE\u5543\u5927\u74DC",
+  "incantation.avada_kedavra": "\u963F\u74E6\u8FBE\u7D22\u547D",
   "incantation.detonare": "\u7206\u7834",
   "incantation.luminous": "\u8367\u5149\u95EA\u70C1",
   "incantation.mobilus_catia": "\u53D8\u732B\u5A18",
   "incantation.phantasma_transitus": "\u5E7B\u5F71\u79FB\u5F62",
-  "incantation.similis_nebulas": "\u6211\u4F3C\u6D6E\u4E91"
+  "incantation.similis_nebulas": "\u6211\u4F3C\u6D6E\u4E91",
+  "item.the_forgotten.scroll": "\u5377\u8F74",
+  "item.the_forgotten.wand": "\u9B54\u6756"
 }

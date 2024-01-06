@@ -6,6 +6,7 @@ import creeperbabytea.fgt.common.init.magic.MagicObjects;
 import creeperbabytea.fgt.common.init.magic.Spells;
 import creeperbabytea.fgt.common.magic.spellwork.spell.Spell;
 import creeperbabytea.fgt.common.registry.SpellRegistry;
+import creeperbabytea.fgt.common.world.Features;
 import creeperbabytea.tealib.common.registry.TeaGeneralRegister;
 import creeperbabytea.tealib.common.registry.TeaRegister;
 import net.minecraft.block.Block;
@@ -39,7 +40,9 @@ public class ForgottenObjects {
         Items.init();
         Blocks.init();
         Effects.init();
+        Material.init();
 
+        Features.init();
         Entities.init();
         ParticleTypes.init();
         Attributes.init();

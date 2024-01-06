@@ -1,9 +1,22 @@
 {
+  "block.the_forgotten.skyward_gazing_leaves": "skywardGazingLeaves",
+  "block.the_forgotten.skyward_gazing_log": "skywardGazingLog",
+  "block.the_forgotten.skyward_gazing_plank": "skywardGazingPlank",
+  "block.the_forgotten.skyward_gazing_sapling": "skywardGazingSapling",
+  "block.the_forgotten.table_of_enchantments": "tableOfEnchantments",
   "gui.the_forgotten.item.scroll": "Scroll",
   "incantation.avada_kedavra": "avadaKedavra",
   "incantation.detonare": "detonare",
   "incantation.luminous": "luminous",
   "incantation.mobilus_catia": "mobilusCatia",
   "incantation.phantasma_transitus": "phantasmaTransitus",
-  "incantation.similis_nebulas": "similisNebulas"
+  "incantation.similis_nebulas": "similisNebulas",
+  "item.the_forgotten.catty_fruit": "cattyFruit",
+  "item.the_forgotten.enchantment_dictionary": "enchantmentDictionary",
+  "item.the_forgotten.scroll": "scroll",
+  "item.the_forgotten.wand": "wand",
+  "key.scroll.sel.x": "Scroll Selection X",
+  "key.scroll.sel.y": "Scroll Selection Y",
+  "msg.scroll.sel.x": "Select the scroll x coordinate to %d",
+  "msg.scroll.sel.y": "Select the scroll y coordinate to %d"
 }

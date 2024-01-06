@@ -1,16 +1,12 @@
 package creeperbabytea.fgt.common.magic.spellwork.item;
 
 import creeperbabytea.fgt.common.init.magic.MagicObjects;
-import creeperbabytea.fgt.common.magic.spellwork.spell.SpellEntry;
 import creeperbabytea.fgt.common.magic.spellwork.Util;
 import creeperbabytea.fgt.common.magic.spellwork.entity.SpellEntity;
 import creeperbabytea.fgt.common.magic.spellwork.event.event.wand.WandCastEvent;
 import creeperbabytea.fgt.common.magic.spellwork.item.wand.WandMaterial;
 import creeperbabytea.fgt.common.magic.spellwork.item.wand.WandState;
-import creeperbabytea.fgt.common.magic.spellwork.spell.IChargeableSpell;
-import creeperbabytea.fgt.common.magic.spellwork.spell.Spell;
-import creeperbabytea.fgt.common.magic.spellwork.spell.SpellSet;
-import creeperbabytea.fgt.common.magic.spellwork.spell.ThrowableSpell;
+import creeperbabytea.fgt.common.magic.spellwork.spell.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -25,11 +21,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class WandItem extends Item {
     public WandItem() {
@@ -60,7 +54,7 @@ public class WandItem extends Item {
             return ActionResult.resultFail(playerIn.getHeldItem(handIn));
         ItemStack wand = playerIn.getHeldItem(handIn);
 
-        SpellSet set =  Util.getSpells(playerIn, spell -> spell instanceof IChargeableSpell);
+        SpellSet set = Util.getSpells(playerIn, spell -> spell instanceof IChargeableSpell);
         wand.getOrCreateTag().putBoolean("chargeable", !set.isEmpty());
 
         float multiplier = this.getMultiplier(wand, worldIn, playerIn);
@@ -133,16 +127,23 @@ public class WandItem extends Item {
         WandCastEvent.Pre pre = new WandCastEvent.Pre(caster, throwableSpells, localSpells);
         MinecraftForge.EVENT_BUS.post(pre);
         if (!pre.isCanceled()) {
+            float step = 0;
             if (!pre.isThrowableCancelled()) {
                 SpellEntity spellEntity = new SpellEntity(caster, throwableSpells);
                 spellEntity.cast(4.0F);
-                for (SpellEntry entry : throwableSpells)
+                for (SpellEntry entry : throwableSpells) {
                     entry.get().onLocalCast(caster, entry.intensity());
+                    step += (float) (entry.get().getMagicState().getComplexity() * 0.5F + entry.intensity() + 0.5);
+                }
             }
             if (!pre.isLocalCancelled()) {
-                for (SpellEntry entry : localSpells)
+                for (SpellEntry entry : localSpells) {
                     entry.get().onLocalCast(caster, entry.intensity());
+                    step += (float) (entry.get().getMagicState().getComplexity() * 0.5F + entry.intensity() + 0.5);
+                }
             }
+            Util.promoteProficiency(caster, step);
+            System.out.println(Util.getProficiency(caster));
 
             WandCastEvent.Post post = new WandCastEvent.Post(caster, throwableSpells, localSpells);
             MinecraftForge.EVENT_BUS.post(post);
