@@ -99,18 +99,11 @@ public class ScrollGUI extends TScreen implements ITeaScreen {
                     spellText.writeText(sb.toString());
                 }
             }
+            drawSlot(matrixStack, mouseX, mouseY, true);
             spellText.render(matrixStack, mouseX, mouseY, partialTicks);
             super.render(matrixStack, mouseX, mouseY, partialTicks);
-        }
-        Vector2i pos = calcIndex(mouseX, mouseY);
-        for (int x = 0; x < xSize; x++) {
-            for (int y = 0; y < ySize; y++) {
-                if (x == pos.x && y == pos.y && !editing)
-                    blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 40, 40, 40, 512, 512);
-                else
-                    blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 0, 40, 40, 512, 512);
-            }
-        }
+        } else
+            drawSlot(matrixStack, mouseX, mouseY, false);
     }
 
     @Override
@@ -125,6 +118,19 @@ public class ScrollGUI extends TScreen implements ITeaScreen {
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void drawSlot(MatrixStack matrixStack, double mouseX, double mouseY, boolean editing) {
+        Vector2i pos = calcIndex(mouseX, mouseY);
+        for (int x = 0; x < xSize; x++) {
+            for (int y = 0; y < ySize; y++) {
+                if (x == pos.x && y == pos.y && !editing)
+                    blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 40, 40, 40, 512, 512);
+                else {
+                    blit(matrixStack, xOffset + 16 + 48 * x, yOffset + 16 + 48 * y, textureWidth + 1, 0, 40, 40, 512, 512);
+                }
+            }
+        }
     }
 
     private void calcPosition() {
